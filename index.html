@@ -27,6 +27,19 @@ body{
     cursor:pointer;
 }
 
+.gallery video{
+    width:100%;
+    height:120px;
+    object-fit:cover;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.viewer video{
+    max-width:100%;
+    max-height:100%;
+}
+
 .viewer{
     position:fixed;
     top:0;
@@ -43,6 +56,18 @@ body{
     max-width:100%;
     max-height:100%;
 }
+
+.closeBtn{
+    position:absolute;
+    top:20px;
+    right:20px;
+    font-size:30px;
+    color:white;
+    cursor:pointer;
+    background:rgba(0,0,0,0.5);
+    padding:5px 10px;
+    border-radius:50%;
+}
 </style>
 </head>
 
@@ -54,21 +79,43 @@ body{
 <img src="IMG_20260227_174935.jpg" onclick="openImg(this.src)">
 <img src="IMG_20260227_175039.jpg" onclick="openImg(this.src)">
 <img src="IMG_20260317_004342.jpg" onclick="openImg(this.src)">
-<img src="1773683290468.jpg" onclick="openImg(this.src)">
+<img src="IMG_20250630_100512.jpg" onclick="openImg(this.src)">
+<img src="IMG_20250630_100532.jpg" onclick="openImg(this.src)">
+<img src="IMG_20250630_101003.jpg" onclick="openImg(this.src)">
+<video onclick="openVideo(this.src)" src="VID_20260124_213016.mp4" muted></video>
 </div>
 
-<div class="viewer" id="viewer" onclick="closeImg()">
-<img id="bigImg">
+<div class="viewer" id="viewer" onclick="closeAll()">
+    <span class="closeBtn" onclick="closeAll()">✕</span>
+    <img id="bigImg" onclick="event.stopPropagation()">
+    <video id="bigVideo" controls style="display:none;" onclick="event.stopPropagation()"></video>
 </div>
 
 <script>
 function openImg(src){
     document.getElementById("viewer").style.display="flex";
-    document.getElementById("bigImg").src=src;
+
+    document.getElementById("bigImg").style.display="block";
+    document.getElementById("bigVideo").style.display="none";
+
+    document.getElementById("bigImg").src = src;
 }
 
-function closeImg(){
+function openVideo(src){
+    document.getElementById("viewer").style.display="flex";
+
+    document.getElementById("bigImg").style.display="none";
+    document.getElementById("bigVideo").style.display="block";
+
+    document.getElementById("bigVideo").src = src;
+}
+
+function closeAll(){
     document.getElementById("viewer").style.display="none";
+
+    let video = document.getElementById("bigVideo");
+    video.pause();
+    video.currentTime = 0;
 }
 </script>
 
