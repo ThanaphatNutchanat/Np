@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ของเปา คนเดียว</title>
+<title>ของที่รักเปาคนเดียว💕🐇🥰</title>
 
 <style>
 body{
@@ -14,7 +14,7 @@ body{
 
 .gallery{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(3,1fr); /* ปกติ 3 คอลัมน์ */
     gap:5px;
     padding:5px;
 }
@@ -68,20 +68,35 @@ body{
     padding:5px 10px;
     border-radius:50%;
 }
+
+/* ===== Responsive สำหรับมือถือ ===== */
+@media (max-width:600px){  
+    .gallery{
+        grid-template-columns:repeat(2,1fr); /* 2 คอลัมน์มือถือ */
+    }
+    .gallery img,
+    .gallery video{
+        height:100px; /* ปรับสูงให้พอดีมือถือ */
+    }
+    .closeBtn{
+        font-size:40px; /* ปุ่มใหญ่แตะง่าย */
+        padding:10px 15px;
+    }
+}
 </style>
 </head>
 
 <body>
 
 <div class="gallery">
-<img src="IMG_20260222_150050.jpg" onclick="openImg(this.src)">
-<img src="IMG_20260222_150056.jpg" onclick="openImg(this.src)">
-<img src="IMG_20260227_174935.jpg" onclick="openImg(this.src)">
-<img src="IMG_20260227_175039.jpg" onclick="openImg(this.src)">
-<img src="IMG_20260317_004342.jpg" onclick="openImg(this.src)">
-<img src="IMG_20250630_100512.jpg" onclick="openImg(this.src)">
-<img src="IMG_20250630_100532.jpg" onclick="openImg(this.src)">
-<img src="IMG_20250630_101003.jpg" onclick="openImg(this.src)">
+<img src="IMG_20260222_150050.jpg" loading="lazy" onclick="openImg(this.src)">
+<img src="IMG_20260222_150056.jpg" loading="lazy" onclick="openImg(this.src)">
+<img src="IMG_20260227_174935.jpg" loading="lazy" onclick="openImg(this.src)">
+<img src="IMG_20260227_175039.jpg" loading="lazy" onclick="openImg(this.src)">
+<img src="IMG_20260317_004342.jpg" loading="lazy" onclick="openImg(this.src)">
+<img src="IMG_20250630_100512.jpg" loading="lazy" onclick="openImg(this.src)">
+<img src="IMG_20250630_100532.jpg" loading="lazy" onclick="openImg(this.src)">
+<img src="IMG_20250630_101003.jpg" loading="lazy" onclick="openImg(this.src)">
 <video onclick="openVideo(this.src)" src="VID_20260124_213016_1.mp4" muted></video>
 </div>
 
@@ -92,31 +107,65 @@ body{
 </div>
 
 <script>
-function openImg(src){
-    document.getElementById("viewer").style.display="flex";
+let items = document.querySelectorAll(".gallery img, .gallery video");
+let currentIndex = 0;
 
+function openImg(src){
+    currentIndex = [...items].findIndex(el => el.src.includes(src));
+    document.getElementById("viewer").style.display="flex";
     document.getElementById("bigImg").style.display="block";
     document.getElementById("bigVideo").style.display="none";
-
     document.getElementById("bigImg").src = src;
 }
 
 function openVideo(src){
+    currentIndex = [...items].findIndex(el => el.src.includes(src));
     document.getElementById("viewer").style.display="flex";
-
     document.getElementById("bigImg").style.display="none";
     document.getElementById("bigVideo").style.display="block";
-
     document.getElementById("bigVideo").src = src;
 }
 
 function closeAll(){
     document.getElementById("viewer").style.display="none";
-
     let video = document.getElementById("bigVideo");
     video.pause();
     video.currentTime = 0;
 }
+
+// ปัดซ้าย-ขวา (มือถือ)
+let startX = 0;
+let viewer = document.getElementById("viewer");
+
+viewer.addEventListener("touchstart", e=>{
+    startX = e.touches[0].clientX;
+});
+
+viewer.addEventListener("touchend", e=>{
+    let endX = e.changedTouches[0].clientX;
+    if(startX - endX > 50){ nextMedia(); }
+    else if(endX - startX > 50){ prevMedia(); }
+});
+
+function nextMedia(){
+    currentIndex = (currentIndex + 1) % items.length;
+    openItem(items[currentIndex]);
+}
+
+function prevMedia(){
+    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    openItem(items[currentIndex]);
+}
+
+function openItem(el){
+    if(el.tagName === "IMG"){ openImg(el.src); }
+    else{ openVideo(el.src); }
+}
+
+// กด ESC ปิด
+document.addEventListener("keydown", e=>{
+    if(e.key === "Escape"){ closeAll(); }
+});
 </script>
 
 </body>
